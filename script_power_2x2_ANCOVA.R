@@ -22,7 +22,7 @@ teach_distribution <- teach_distribution %>% as_tibble() %>%
   mutate(group = "teach") %>%
   rename(pre_test=V1, low_pressure=V2, high_pressure=V3)
 
-
+head(teach_distribution)
 
 # Expecting to Test Group ----
 set.seed(1)
@@ -187,7 +187,7 @@ sim_summary <- sim_data %>% group_by(n) %>%
             GxT_sig = sum(GxT_p<0.05)/n(),) %>%
   pivot_longer(cols=Cov_sig:GxT_sig, names_to = "Effect", values_to = "Power") %>%
   mutate(Effect = fct_relevel(Effect, "Cov_sig", "Group_sig", "Test_sig", "GxT_sig"))
-
+sim_summary
 
 # Color blind friendly palette 
 cbPalette <- c("#000000", "#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
