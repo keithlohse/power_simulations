@@ -3,7 +3,7 @@ library(MASS); library(lme4); library(car); library(lmerTest); library(tidyverse
 # Expecting to Teach ANALOGY Group ----
 set.seed(1)
 teach_size <- 1000 # size of the simulated population                                       
-teach_meanvector <- c(90, 50, 50) # means for pre and post tests
+teach_meanvector <- c(87, 54, 46) # means for pre and post tests
 
 teach_correl_matrix <- matrix(c(1, 0.6, 0.6, 
                                 0.6, 1, 0.8,
@@ -28,7 +28,7 @@ teach_anl_distribution <- teach_distribution %>% as_tibble() %>%
 # Expecting to Teach EXPLICIT Group ----
 set.seed(1)
 teach_size <- 1000 # size of the simulated population                                       
-teach_meanvector <- c(90, 50, 60) # means for pre and post tests
+teach_meanvector <- c(81, 47, 65) # means for pre and post tests
 
 teach_correl_matrix <- matrix(c(1, 0.6, 0.6, 
                                 0.6, 1, 0.8,
@@ -52,7 +52,7 @@ teach_exp_distribution <- teach_distribution %>% as_tibble() %>%
 # Expecting to Test ANALOGY Group ----
 set.seed(1)
 test_size <- 1000 # size of the simulated population                                       
-test_meanvector <- c(90, 55, 55) # means for and post tests
+test_meanvector <- c(97, 58, 56) # means for and post tests
 
 test_correl_matrix <- matrix(c(1, 0.6, 0.6, 
                                0.6, 1, 0.8,
@@ -76,7 +76,7 @@ test_anl_distribution <- test_distribution %>% as_tibble() %>%
 # Expecting to Test EXPLICIT Group ----
 set.seed(1)
 test_size <- 1000 # size of the simulated population                                       
-test_meanvector <- c(90, 55, 65) # means for and post tests
+test_meanvector <- c(87, 61, 64) # means for and post tests
 
 test_correl_matrix <- matrix(c(1, 0.6, 0.6, 
                                0.6, 1, 0.8,
@@ -236,7 +236,7 @@ ggplot(data=sim_summary, aes(x=n, y=Power)) +
   scale_x_continuous(name = "n/Group") +
   scale_y_continuous(name = "Statistical Power", limits=c(0,1),
                      breaks=c(seq(from=0, to=1, by=0.2))) +
-  theme_bw()+
+  theme_bw()+facet_wrap(~Effect, ncol=2)+
   scale_fill_manual(values=cbPalette)+
   scale_colour_manual(values=cbPalette)+
   theme(axis.text=element_text(size=12, color="black"), 
@@ -249,31 +249,14 @@ ggplot(data=sim_summary, aes(x=n, y=Power)) +
         legend.position = "bottom")
 
 
+ggsave(
+  filename="./power_sim_1.jpeg",
+  plot = last_plot(),
+  width = 6,
+  height = 8,
+  units = "in",
+  dpi = 150
+)
 
-head(sim_data)
-sim_data_long <- sim_data %>% select(-Cov_p, -Group_p, -Test_p, -GxT_p) %>%
-  pivot_longer(cols=teach_pre_ave:test_diff_sd, 
-               names_to=c("Group", "Test", "Variable"),
-               names_sep="_",
-               values_to = "Score") %>%
-  pivot_wider(names_from = "Variable", values_from = "Score")
 
-head(sim_data_long)
 
-ggplot(data=sim_data_long %>% filter(Test == "diff"), 
-       aes(x=ave)) +
-  geom_histogram(aes(fill=Group), col="black")+
-  facet_wrap(~n)+
-  scale_x_continuous(name = "Difference (High - Low Pressure)") +
-  scale_y_continuous(name = "Count") +
-  theme_bw()+
-  scale_fill_manual(values=cbPalette)+
-  scale_colour_manual(values=cbPalette)+
-  theme(axis.text=element_text(size=12, color="black"), 
-        legend.text=element_text(size=12, color="black"),
-        legend.title=element_text(size=12, face="bold"),
-        axis.title=element_text(size=12, face="bold"),
-        plot.title=element_text(size=12, face="bold", hjust=0.5),
-        panel.grid.minor = element_blank(),
-        strip.text = element_text(size=12, face="bold"),
-        legend.position = "bottom")
